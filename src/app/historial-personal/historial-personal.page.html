@@ -1,0 +1,241 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Historial Personal</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirmarCerrarSesion()" color="light">
+        👋 Cerrar Sesión
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" *ngIf="madreActual">
+  <!-- BIENVENIDA -->
+  <ion-card color="secondary">
+    <ion-card-content class="ion-text-center">
+      <h1>👋 Hola, {{ madreActual.nombre }}</h1>
+      <p>Tu bienestar y el de tu bebé son nuestra prioridad</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- INFORMACIÓN PRINCIPAL -->
+  <ion-grid>
+    <ion-row>
+      <!-- COLUMNA IZQUIERDA: INFORMACIÓN PERSONAL -->
+      <ion-col size="12" size-md="6">
+        <!-- DATOS PERSONALES -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>👤 Mis Datos</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item>
+                <ion-label>
+                  <h3>📞 Teléfono</h3>
+                  <p>{{ madreActual.telefono }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h3>🎂 Edad</h3>
+                  <p>{{ madreActual.edad }} años</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h3>🤰 Semanas de gestación</h3>
+                  <p>{{ madreActual.semanaGestacion }} semanas</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h3>📅 Trimestre actual</h3>
+                  <p>{{ trimestreActual }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h3>🩸 Grupo sanguíneo</h3>
+                  <p>{{ madreActual.grupoSanguineo || 'No especificado' }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- INFORMACIÓN MÉDICA -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>🏥 Información Médica</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item>
+              <ion-label>
+                <h3>💓 Presión arterial</h3>
+                <p>{{ madreActual.presionArterial || 'No registrada' }}</p>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label class="ion-text-wrap">
+                <h3>⚠️ Alergias</h3>
+                <p>{{ madreActual.alergias || 'Ninguna registrada' }}</p>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label class="ion-text-wrap">
+                <h3>🎗️ Enfermedades crónicas</h3>
+                <p>{{ madreActual.enfermedadesCronicas || 'Ninguna registrada' }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <!-- COLUMNA DERECHA: FPP Y ALERTAS -->
+      <ion-col size="12" size-md="6">
+        <!-- FECHA PROBABLE DE PARTO -->
+        <ion-card color="warning">
+          <ion-card-header>
+            <ion-card-title>📅 Fecha Probable de Parto</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="ion-text-center">
+            <h2>{{ madreActual.fpp }}</h2>
+            <p *ngIf="diasRestantesFPP > 0">
+              Faltan <strong>{{ diasRestantesFPP }} días</strong>
+            </p>
+            <p *ngIf="diasRestantesFPP <= 0">
+              <strong>¡Tu bebé está por llegar!</strong>
+            </p>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- ALERTAS MÉDICAS -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>⚠️ Mis Alertas</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="madreActual.alertas.length === 0" class="ion-text-center">
+              <p>🎉 No tienes alertas médicas</p>
+              <p><small>Tu embarazo progresa normalmente</small></p>
+            </div>
+            <div *ngIf="madreActual.alertas.length > 0">
+              <ion-item *ngFor="let alerta of madreActual.alertas" class="ion-margin-bottom">
+                <ion-label class="ion-text-wrap">
+                  <ion-badge [color]="obtenerColorAlerta(madreActual.alertas.length)">
+                    {{ alerta }}
+                  </ion-badge>
+                  <p><small>Consulta con tu médico</small></p>
+                </ion-label>
+              </ion-item>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- MÉDICO ASIGNADO -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>🩺 Mi Médico</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item>
+                <ion-label>
+                  <h3>👨‍⚕️ Nombre</h3>
+                  <p>{{ datosMedico.nombre }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h3>🎓 Especialidad</h3>
+                  <p>{{ datosMedico.especialidad }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h3>📞 Teléfono</h3>
+                  <p>{{ datosMedico.telefono }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label class="ion-text-wrap">
+                  <h3>🏥 Consultorio</h3>
+                  <p>{{ datosMedico.consultorio }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- PRÓXIMOS CONTROLES -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>📋 Mis Próximos Controles</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let control of proximosControles">
+                <ion-label>
+                  <h3>{{ control.tipo }}</h3>
+                  <p>📅 {{ formatearFecha(control.fecha) }}</p>
+                  <p>📍 {{ control.lugar }}</p>
+                </ion-label>
+                <ion-button fill="outline" size="small">
+                  🗓️ Agendar
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- RECOMENDACIONES -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-card color="light">
+          <ion-card-header>
+            <ion-card-title>💡 Recomendaciones para Ti</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12" size-md="6" *ngFor="let recomendacion of recomendaciones">
+                  <ion-item>
+                    <ion-label class="ion-text-wrap">
+                      {{ recomendacion }}
+                    </ion-label>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- ALERTA DE CERRAR SESIÓN -->
+  <ion-alert
+    [isOpen]="mostrarAlertaCerrarSesion"
+    header="Cerrar Sesión"
+    message="¿Estás segura de que quieres cerrar sesión?"
+    [buttons]="alertaButtons">
+  </ion-alert>
+</ion-content>
+
+<!-- MENSAJE SI NO HAY DATOS -->
+<ion-content class="ion-padding" *ngIf="!madreActual">
+  <div class="ion-text-center ion-padding">
+    <h2>🔒 Acceso no autorizado</h2>
+    <p>Por favor inicia sesión para ver tu historial personal</p>
+    <ion-button [routerLink]="['/login-madre']" class="ion-margin-top">
+      👩 Iniciar Sesión
+    </ion-button>
+  </div>
+</ion-content>

@@ -1,0 +1,181 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Panel Médico - MaternApp</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- ESTADÍSTICAS PRINCIPALES -->
+  <ion-grid class="ion-margin-bottom">
+    <ion-row>
+      <ion-col size="6" size-md="3">
+        <ion-card color="primary">
+          <ion-card-header>
+            <ion-card-title>{{ totalPacientes }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <small>Total Pacientes</small>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6" size-md="3">
+        <ion-card color="warning">
+          <ion-card-header>
+            <ion-card-title>{{ pacientesConAlertas }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <small>Con Alertas</small>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6" size-md="3">
+        <ion-card color="success">
+          <ion-card-header>
+            <ion-card-title>{{ embarazosAvanzados }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <small>+35 Semanas</small>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6" size-md="3">
+        <ion-card color="tertiary">
+          <ion-card-header>
+            <ion-card-title>{{ pacientesJovenes }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <small>Menores 20 años</small>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+ <!-- BÚSQUEDA RÁPIDA -->
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>🔍 Búsqueda Rápida</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <!-- ... contenido ... -->
+  </ion-card-content>
+</ion-card>
+<!-- BOTÓN TEMPORAL PARA CREAR DATOS DE PRUEBA -->
+<ion-card color="warning">
+  <ion-card-header>
+    <ion-card-title>🧪 TEST - Crear Datos de Prueba</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <p>Haz clic aquí para generar pacientes con alertas y probar los botones "👁️ Ver"</p>
+    <ion-button expand="block" (click)="crearDatosPruebaAutomaticamente()" color="danger">
+      🎯 Generar Datos de Prueba con Alertas
+    </ion-button>
+  </ion-card-content>
+</ion-card>
+
+  <!-- DOS COLUMNAS PRINCIPALES -->
+  <ion-grid>
+    <ion-row>
+      <!-- COLUMNA IZQUIERDA: PACIENTES PRIORITARIOS -->
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>⚠️ Casos Prioritarios</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="pacientesPrioritarios.length === 0" class="ion-text-center ion-padding">
+              <p>🎉 No hay casos prioritarios</p>
+              <small>Todos los pacientes están estables</small>
+            </div>
+
+            <ion-item *ngFor="let madre of pacientesPrioritarios" class="ion-margin-bottom">
+              <ion-label>
+                <h3>{{ madre.nombre }}</h3>
+                <p>Edad: {{ madre.edad }} • Semanas: {{ madre.semanaGestacion }}</p>
+                <p>Tel: {{ madre.telefono }}</p>
+                <div>
+                  <ion-badge 
+                    *ngFor="let alerta of madre.alertas" 
+                    [color]="obtenerColorAlerta(madre.alertas.length)"
+                    class="ion-margin-end">
+                    {{ alerta }}
+                  </ion-badge>
+                </div>
+              </ion-label>
+              <ion-button fill="clear" size="small" (click)="verDetalleRapido(madre)">
+                👁️ Ver
+              </ion-button>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- PRÓXIMOS CONTROLES -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>📅 Próximos Controles</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item *ngFor="let control of proximosControles">
+              <ion-label>
+                <h3>{{ control.nombre }}</h3>
+                <p>{{ control.tipo }}</p>
+                <p><small>{{ control.fecha }}</small></p>
+              </ion-label>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <!-- COLUMNA DERECHA: LISTA DE PACIENTES -->
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>👥 Lista de Pacientes</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="pacientesFiltrados.length === 0" class="ion-text-center ion-padding">
+              <p>No se encontraron pacientes</p>
+            </div>
+
+            <ion-item *ngFor="let madre of pacientesFiltrados" class="ion-margin-bottom">
+              <ion-label>
+                <h3>{{ madre.nombre }}</h3>
+                <p>Edad: {{ madre.edad }} • Semanas: {{ madre.semanaGestacion }}</p>
+                <p>Tel: {{ madre.telefono }}</p>
+                <p><small>FPP: {{ madre.fpp }}</small></p>
+                <ion-badge *ngIf="madre.alertas.length > 0" color="warning">
+                  {{ madre.alertas.length }} alerta(s)
+                </ion-badge>
+                <ion-badge *ngIf="madre.alertas.length === 0" color="success">
+                  Estable
+                </ion-badge>
+              </ion-label>
+            </ion-item>
+
+            <ion-button expand="block" [routerLink]="['/pacientes']" class="ion-margin-top">
+              Ver Todos los Pacientes
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- ACCIONES RÁPIDAS -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>⚡ Acciones Rápidas</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-button expand="block" (click)="navegarAHerramientas()" class="ion-margin-bottom">
+              🧮 Herramientas Médicas
+            </ion-button>
+            <ion-button expand="block" (click)="navegarAGestionPacientes()" fill="outline">
+              📋 Gestión de Pacientes
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

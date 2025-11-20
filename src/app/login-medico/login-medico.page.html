@@ -1,0 +1,183 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Acceso Médico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <!-- SELECTOR DE MODO -->
+    <div class="modo-selector ion-margin-bottom">
+      <ion-segment [value]="modo" (ionChange)="cambiarModo($any($event).detail.value)">
+        <ion-segment-button value="login">
+          <ion-label>Iniciar Sesión</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="registro">
+          <ion-label>Registrarse</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- FORMULARIO DE LOGIN -->
+    <div *ngIf="modo === 'login'">
+      <div class="header-medico">
+        <h2>🩺 Iniciar Sesión</h2>
+        <p>Personal médico autorizado</p>
+      </div>
+
+      <form (ngSubmit)="onLogin()">
+        <ion-item>
+          <ion-label position="floating">Email profesional</ion-label>
+          <ion-input 
+            type="email" 
+            [(ngModel)]="credenciales.email" 
+            name="email"
+            placeholder="ejemplo@hospital.com"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input 
+            type="password" 
+            [(ngModel)]="credenciales.password" 
+            name="password"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-button 
+          expand="block" 
+          type="submit" 
+          class="ion-margin-top">
+          🔐 Iniciar Sesión
+        </ion-button>
+      </form>
+
+      <!-- BOTÓN DE PRUEBA -->
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="medium"
+        (click)="crearCuentaPrueba()"
+        class="ion-margin-top">
+        🧪 Cargar Datos de Prueba
+      </ion-button>
+    </div>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <div *ngIf="modo === 'registro'">
+      <div class="header-medico">
+        <h2>📝 Registro de Médico</h2>
+        <p>Crear nueva cuenta profesional</p>
+      </div>
+
+      <form (ngSubmit)="onRegistro()">
+        <ion-item>
+          <ion-label position="floating">Nombre completo</ion-label>
+          <ion-input 
+            type="text" 
+            [(ngModel)]="nuevoMedico.nombre" 
+            name="nombre"
+            placeholder="Dr./Dra. Nombre Apellido"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Email profesional</ion-label>
+          <ion-input 
+            type="email" 
+            [(ngModel)]="nuevoMedico.email" 
+            name="email"
+            placeholder="ejemplo@hospital.com"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input 
+            type="password" 
+            [(ngModel)]="nuevoMedico.password" 
+            name="password"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Confirmar contraseña</ion-label>
+          <ion-input 
+            type="password" 
+            [(ngModel)]="nuevoMedico.confirmarPassword" 
+            name="confirmarPassword"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Especialidad</ion-label>
+          <ion-select 
+            [(ngModel)]="nuevoMedico.especialidad" 
+            name="especialidad"
+            required>
+            <ion-select-option value="">Seleccionar especialidad</ion-select-option>
+            <ion-select-option *ngFor="let esp of especialidades" [value]="esp">
+              {{ esp }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Número de matrícula</ion-label>
+          <ion-input 
+            type="text" 
+            [(ngModel)]="nuevoMedico.matricula" 
+            name="matricula"
+            placeholder="Ej: MG-12345"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Teléfono</ion-label>
+          <ion-input 
+            type="tel" 
+            [(ngModel)]="nuevoMedico.telefono" 
+            name="telefono"
+            placeholder="Ej: 5555-6789">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Hospital/Clínica</ion-label>
+          <ion-input 
+            type="text" 
+            [(ngModel)]="nuevoMedico.hospital" 
+            name="hospital"
+            placeholder="Ej: Hospital Central">
+          </ion-input>
+        </ion-item>
+
+        <ion-button 
+          expand="block" 
+          type="submit" 
+          class="ion-margin-top">
+          📝 Registrarse
+        </ion-button>
+      </form>
+    </div>
+
+    <div class="login-footer">
+      <p>¿Eres una madre paciente?</p>
+      <!-- BOTÓN CORREGIDO -->
+      <ion-button 
+        fill="clear" 
+        size="small" 
+        (click)="irARegistroMadre()">
+        Crear cuenta de paciente
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,170 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Gestión de Pacientes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- ESTADÍSTICAS -->
+  <ion-card color="light">
+    <ion-card-header>
+      <ion-card-title>📊 Resumen de Pacientes</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <h3>{{ totalPacientes }}</h3>
+            <p><small>Total Registrados</small></p>
+          </ion-col>
+          <ion-col size="6">
+            <h3>{{ pacientesConAlertas }}</h3>
+            <p><small>Con Alertas Activas</small></p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- FILTROS AVANZADOS -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>🔍 Filtros Avanzados</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-searchbar 
+              [(ngModel)]="busqueda" 
+              (ionInput)="aplicarFiltros()"
+              placeholder="Buscar por nombre, teléfono o grupo sanguíneo">
+            </ion-searchbar>
+          </ion-col>
+        </ion-row>
+        
+        <ion-row>
+          <ion-col size="12" size-md="4">
+            <ion-item>
+              <ion-label>Estado de Alertas</ion-label>
+              <ion-select 
+                [(ngModel)]="filtroAlerta" 
+                (ionChange)="aplicarFiltros()">
+                <ion-select-option value="todos">Todos los estados</ion-select-option>
+                <ion-select-option value="con-alertas">Con alertas</ion-select-option>
+                <ion-select-option value="sin-alertas">Sin alertas</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12" size-md="4">
+            <ion-item>
+              <ion-label>Rango de Edad</ion-label>
+              <ion-select 
+                [(ngModel)]="filtroEdad" 
+                (ionChange)="aplicarFiltros()">
+                <ion-select-option value="todos">Todas las edades</ion-select-option>
+                <ion-select-option value="menor-20">Menor de 20</ion-select-option>
+                <ion-select-option value="20-35">20 - 35 años</ion-select-option>
+                <ion-select-option value="mayor-35">Mayor de 35</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12" size-md="4">
+            <ion-item>
+              <ion-label>Trimestre</ion-label>
+              <ion-select 
+                [(ngModel)]="filtroSemanas" 
+                (ionChange)="aplicarFiltros()">
+                <ion-select-option value="todos">Todos los trimestres</ion-select-option>
+                <ion-select-option value="primer-trimestre">1er Trimestre</ion-select-option>
+                <ion-select-option value="segundo-trimestre">2do Trimestre</ion-select-option>
+                <ion-select-option value="tercer-trimestre">3er Trimestre</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- LISTA DE PACIENTES -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        👥 Lista de Pacientes 
+        <ion-badge color="primary" class="ion-margin-start">
+          {{ pacientesFiltrados.length }}
+        </ion-badge>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div *ngIf="pacientesFiltrados.length === 0" class="ion-text-center ion-padding">
+        <h3>🔍 No se encontraron pacientes</h3>
+        <p>Intenta ajustar los filtros de búsqueda</p>
+      </div>
+
+      <ion-list>
+        <ion-item *ngFor="let madre of pacientesFiltrados" class="ion-margin-bottom item-paciente">
+          <ion-label class="ion-text-wrap">
+            <h2>{{ madre.nombre }}</h2>
+            
+            <p>📞 {{ madre.telefono }} • 🎂 {{ madre.edad }} años</p>
+            <p>🤰 {{ madre.semanaGestacion }} semanas • 🗓️ FPP: {{ madre.fpp }}</p>
+            
+            <ion-note *ngIf="madre.grupoSanguineo">
+              🩸 Grupo: {{ madre.grupoSanguineo }}
+            </ion-note>
+            <br>
+            <ion-note *ngIf="madre.presionArterial">
+              💓 Presión: {{ madre.presionArterial }}
+            </ion-note>
+
+            <div *ngIf="madre.alertas.length > 0" class="ion-margin-top">
+              <ion-badge 
+                *ngFor="let alerta of madre.alertas" 
+                [color]="obtenerColorAlerta(madre.alertas.length)"
+                class="ion-margin-end ion-margin-bottom">
+                ⚠️ {{ alerta }}
+              </ion-badge>
+            </div>
+
+            <div *ngIf="madre.alertas.length === 0" class="ion-margin-top">
+              <ion-badge color="success">
+                ✅ Sin alertas
+              </ion-badge>
+            </div>
+
+            <p class="ion-margin-top">
+              <small>📅 Registrada: {{ madre.fechaRegistro | date:'medium' }}</small>
+            </p>
+          </ion-label>
+
+          <div slot="end" class="acciones-paciente">
+            <ion-button 
+              fill="clear" 
+              color="danger" 
+              size="small"
+              (click)="confirmarEliminacion(madre)">
+              🗑️ Eliminar
+            </ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <!-- Agregar después de los filtros existentes -->
+<ion-button expand="block" color="primary" (click)="abrirModalAgregarPaciente()" class="ion-margin">
+  <ion-icon name="person-add" slot="start"></ion-icon>
+  Agregar Paciente Manualmente
+</ion-button>
+
+  <!-- ALERTA DE ELIMINACIÓN -->
+  <ion-alert
+    [isOpen]="mostrarAlertaEliminar"
+    header="Confirmar Eliminación"
+    [message]="'¿Estás seguro de que quieres eliminar a ' + (pacienteAEliminar?.nombre || 'este paciente') + '? Esta acción no se puede deshacer.'"
+    [buttons]="alertaButtons">
+  </ion-alert>
+</ion-content>

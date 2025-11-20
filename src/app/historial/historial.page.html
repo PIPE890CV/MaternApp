@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Historial de Madres</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- DEBUG TEMPORAL -->
+  <div style="background: #3880ff; color: white; padding: 10px; margin: 10px; border-radius: 8px;">
+    🔍 DEBUG: {{ madresRegistradas.length }} registros cargados | Búsqueda: "{{ busqueda }}"
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="estadisticas">
+    <ion-item>
+      <ion-label>
+        <h2>Total de Registros</h2>
+        <p>{{ getTotalRegistros() }} madres</p>
+      </ion-label>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>
+        <h2>Alertas Activas</h2>
+        <p>{{ getMadresConAlertas() }} casos</p>
+      </ion-label>
+    </ion-item>
+  </div>
+
+  <!-- Búsqueda -->
+  <ion-item>
+    <ion-label position="floating">Buscar por nombre o teléfono</ion-label>
+    <ion-input 
+      type="text" 
+      [(ngModel)]="busqueda"
+      placeholder="Ej: María, 5555-4444">
+    </ion-input>
+  </ion-item>
+
+  <!-- Lista de madres -->
+  <ion-list>
+    <ion-item *ngFor="let madre of madresFiltradas" class="item-madre">
+      <ion-label>
+        <h2>{{ madre.nombre }}</h2>
+        <p>Edad: {{ madre.edad }} • Semanas: {{ madre.semanaGestacion }}</p>
+        <p>Tel: {{ madre.telefono }}</p>
+        <p>FPP: {{ madre.fpp }}</p>
+        
+        <!-- Alertas -->
+        <div *ngIf="madre.alertas && madre.alertas.length > 0">
+          <ion-badge *ngFor="let alerta of madre.alertas" color="warning" class="ion-margin-end">
+            {{ alerta }}
+          </ion-badge>
+        </div>
+
+        <!-- Información médica -->
+        <ion-note *ngIf="madre.presionArterial">
+          Presión: {{ madre.presionArterial }}
+        </ion-note>
+        <br>
+        <ion-note *ngIf="madre.grupoSanguineo">
+          Sangre: {{ madre.grupoSanguineo }}
+        </ion-note>
+      </ion-label>
+
+      <ion-button 
+        fill="clear" 
+        color="danger" 
+        (click)="eliminarRegistro(madre.id)">
+        Eliminar
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <!-- Mensaje vacío -->
+  <div *ngIf="madresFiltradas.length === 0" class="mensaje-vacio" style="text-align: center; padding: 40px;">
+    <p>No hay registros de madres</p>
+    <ion-button routerLink="/registro-madre" expand="block" class="ion-margin-top">
+      Registrar Primera Madre
+    </ion-button>
+  </div>
+
+  <!-- Botón limpiar -->
+  <ion-button 
+    *ngIf="madresRegistradas.length > 0"
+    expand="block" 
+    fill="outline" 
+    color="medium" 
+    (click)="limpiarHistorial()"
+    class="ion-margin-top">
+    Limpiar Todo el Historial
+  </ion-button>
+</ion-content>

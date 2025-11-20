@@ -1,0 +1,149 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registro de Madre</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <!-- Campos básicos -->
+    <ion-item>
+      <ion-label position="floating">Nombre completo</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="madre.nombre"
+        name="nombre"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Edad</ion-label>
+      <ion-input
+        type="number"
+        [(ngModel)]="madre.edad"
+        name="edad"
+        required
+        (ionInput)="validarEdad()">
+      </ion-input>
+      <ion-note *ngIf="edadInvalida" color="danger" slot="error">
+        Edad debe ser entre 12-50 años
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Semana de gestación</ion-label>
+      <ion-input
+        type="number"
+        [(ngModel)]="madre.semanaGestacion"
+        name="semanaGestacion"
+        required
+        (ionInput)="validarSemana()">
+      </ion-input>
+      <ion-note *ngIf="semanaInvalida" color="danger" slot="error">
+        Semana debe ser entre 1-42
+      </ion-note>
+      <ion-note *ngIf="madre.semanaGestacion && !semanaInvalida" color="success" slot="helper">
+        FPP: {{ calcularFPP() }}
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Teléfono</ion-label>
+      <ion-input
+        type="tel"
+        [(ngModel)]="madre.telefono"
+        name="telefono"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <!-- Nuevos campos médicos -->
+    <ion-item>
+      <ion-label position="floating">Presión Arterial (ej: 120/80)</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="madre.presionArterial"
+        name="presionArterial"
+        placeholder="Ej: 120/80">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Grupo Sanguíneo</ion-label>
+      <ion-select [(ngModel)]="madre.grupoSanguineo" name="grupoSanguineo">
+        <ion-select-option value="">Seleccionar</ion-select-option>
+        <ion-select-option value="A+">A+</ion-select-option>
+        <ion-select-option value="A-">A-</ion-select-option>
+        <ion-select-option value="B+">B+</ion-select-option>
+        <ion-select-option value="B-">B-</ion-select-option>
+        <ion-select-option value="O+">O+</ion-select-option>
+        <ion-select-option value="O-">O-</ion-select-option>
+        <ion-select-option value="AB+">AB+</ion-select-option>
+        <ion-select-option value="AB-">AB-</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Alergias conocidas</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="madre.alergias"
+        name="alergias"
+        placeholder="Ej: Penicilina, mariscos...">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Enfermedades crónicas</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="madre.enfermedadesCronicas"
+        name="enfermedadesCronicas"
+        placeholder="Ej: Diabetes, hipertensión...">
+      </ion-input>
+    </ion-item>
+
+    <!-- Campos de login -->
+    <ion-item>
+      <ion-label position="stacked">Email *</ion-label>
+      <ion-input
+        type="email"
+        name="email"
+        [(ngModel)]="madre.email"
+        required
+        placeholder="tu@email.com">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Contraseña *</ion-label>
+      <ion-input
+        type="password"
+        name="password"
+        [(ngModel)]="madre.password"
+        required
+        placeholder="Mínimo 6 caracteres">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Confirmar Contraseña *</ion-label>
+      <ion-input
+        type="password"
+        name="confirmPassword"
+        [(ngModel)]="madre.confirmPassword"
+        required
+        placeholder="Repite tu contraseña">
+      </ion-input>
+    </ion-item>
+
+    <ion-button
+      expand="full"
+      type="submit" 
+      class="ion-margin-top"
+      [disabled]="!form.valid || semanaInvalida || edadInvalida">
+      Registrar
+    </ion-button>
+  </form>
+</ion-content>

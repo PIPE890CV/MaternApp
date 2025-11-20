@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Agregar Nuevo Paciente</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelar()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="guardarPaciente()">
+    <!-- Datos básicos -->
+    <ion-item>
+      <ion-label position="stacked">Nombre completo *</ion-label>
+      <ion-input [(ngModel)]="paciente.nombre" name="nombre" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Email *</ion-label>
+      <ion-input type="email" [(ngModel)]="paciente.email" name="email" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Edad</ion-label>
+      <ion-input type="number" [(ngModel)]="paciente.edad" name="edad"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Teléfono</ion-label>
+      <ion-input type="tel" [(ngModel)]="paciente.telefono" name="telefono"></ion-input>
+    </ion-item>
+
+    <!-- Datos médicos -->
+    <ion-item>
+      <ion-label position="stacked">Semana de gestación</ion-label>
+      <ion-input type="number" [(ngModel)]="paciente.semanaGestacion" name="semanaGestacion"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Grupo sanguíneo</ion-label>
+      <ion-select [(ngModel)]="paciente.grupoSanguineo" name="grupoSanguineo">
+        <ion-select-option value="">Seleccionar</ion-select-option>
+        <ion-select-option *ngFor="let grupo of gruposSanguineos" [value]="grupo">
+          {{ grupo }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Presión arterial</ion-label>
+      <ion-input [(ngModel)]="paciente.presionArterial" name="presionArterial" placeholder="Ej: 120/80"></ion-input>
+    </ion-item>
+
+    <!-- Información adicional -->
+    <ion-item>
+      <ion-label position="stacked">Alergias</ion-label>
+      <ion-textarea [(ngModel)]="paciente.alergias" name="alergias" rows="2"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Enfermedades crónicas</ion-label>
+      <ion-textarea [(ngModel)]="paciente.enfermedadesCronicas" name="enfermedadesCronicas" rows="2"></ion-textarea>
+    </ion-item>
+
+    <!-- Botones -->
+    <ion-button type="submit" expand="block" color="primary" class="ion-margin-top" [disabled]="!paciente.nombre || !paciente.email">
+      Guardar Paciente
+    </ion-button>
+  </form>
+</ion-content>

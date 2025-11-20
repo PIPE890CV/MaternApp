@@ -1,0 +1,152 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Herramientas Médicas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- CALCULADORA FPP -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>📅 Calculadora de FPP</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Calcula la Fecha Probable de Parto basada en la FUM</p>
+      
+      <ion-item>
+        <ion-label position="stacked">Fecha de Última Menstruación (FUM)</ion-label>
+        <ion-input 
+          type="date" 
+          [(ngModel)]="fum"
+          placeholder="Selecciona la fecha">
+        </ion-input>
+      </ion-item>
+
+      <ion-button 
+        expand="block" 
+        (click)="calcularFPP()"
+        class="ion-margin-top">
+        🧮 Calcular FPP
+      </ion-button>
+
+      <div *ngIf="fppResultado" class="resultado-fpp ion-margin-top">
+        <ion-card color="success">
+          <ion-card-content>
+            <h3>📅 Fecha Probable de Parto:</h3>
+            <p><strong>{{ fppResultado }}</strong></p>
+            <p *ngIf="semanasEmbarazo > 0">
+              🤰 Semanas de embarazo: <strong>{{ semanasEmbarazo }} semanas</strong>
+            </p>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- CALCULADORA IMC -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>⚖️ Calculadora de IMC</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Calcula el Índice de Masa Corporal</p>
+      
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-item>
+              <ion-label position="stacked">Peso (kg)</ion-label>
+              <ion-input 
+                type="number" 
+                [(ngModel)]="peso"
+                placeholder="Ej: 65">
+              </ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12" size-md="6">
+            <ion-item>
+              <ion-label position="stacked">Altura (cm)</ion-label>
+              <ion-input 
+                type="number" 
+                [(ngModel)]="altura"
+                placeholder="Ej: 165">
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-button 
+        expand="block" 
+        (click)="calcularIMC()"
+        class="ion-margin-top">
+        📊 Calcular IMC
+      </ion-button>
+
+      <div *ngIf="imcResultado > 0" class="resultado-imc ion-margin-top">
+        <ion-card [color]="getColorIMC()">
+          <ion-card-content>
+            <h3>📊 Resultado IMC:</h3>
+            <p><strong>{{ imcResultado.toFixed(1) }}</strong></p>
+            <p>Clasificación: <strong>{{ clasificacionIMC }}</strong></p>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- TABLAS DE REFERENCIA -->
+  <ion-grid>
+    <ion-row>
+      <!-- TABLA PRESIÓN ARTERIAL -->
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>🩺 Presión Arterial</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let item of tablaPresionArterial">
+                <ion-label class="ion-text-wrap">
+                  <h3>{{ item.categoria }}</h3>
+                  <p>{{ item.sistolica }} / {{ item.diastolica }} mmHg</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <!-- TABLA GANANCIA DE PESO -->
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>⚖️ Ganancia de Peso en Embarazo</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let item of tablaGananciaPeso">
+                <ion-label class="ion-text-wrap">
+                  <h3>{{ item.imcInicial }}</h3>
+                  <p>{{ item.gananciaRecomendada }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- INFORMACIÓN ADICIONAL -->
+  <ion-card color="light">
+    <ion-card-header>
+      <ion-card-title>💡 Información Médica</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Fórmula FPP:</strong> FUM + 280 días (Regla de Naegele)</p>
+      <p><strong>Fórmula IMC:</strong> Peso (kg) / [Altura (m)]²</p>
+      <p><strong>Nota:</strong> Estas herramientas son de referencia. Siempre consulte con un profesional.</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
